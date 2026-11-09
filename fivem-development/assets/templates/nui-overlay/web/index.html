@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{{RESOURCE_NAME}}</title>
+  <style>
+    html, body { margin: 0; background: transparent; font-family: sans-serif; }
+    #panel { display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
+             background: #1c1f24; color: #eee; padding: 16px 20px; border-radius: 8px; min-width: 260px; }
+    #panel.show { display: block; }
+    button { margin-right: 8px; }
+    #status { margin-top: 10px; min-height: 1.2em; }
+  </style>
+</head>
+<body>
+  <div id="panel">
+    <div>Interaction point</div>
+    <input id="point" value="office" maxlength="32" />
+    <div style="margin-top:10px">
+      <button id="send">Request</button>
+      <button id="close">Close</button>
+    </div>
+    <div id="status"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

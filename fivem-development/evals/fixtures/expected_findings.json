@@ -1,0 +1,16 @@
+{
+  "_doc": "Expectations used by scripts/selftest.py. must_include = false-negative guard (the auditor has to report these codes); max_high/max_medium = false-positive guard (clean code must stay quiet). Codes needing synced natives data (wrong-side-native) are tested separately with a temporary data folder.",
+  "bad_resource": {
+    "must_include": ["client-controlled-value", "deprecated-ped", "dynamic-exec", "hardcoded-secret", "lua54-deprecated", "manifest-missing-file", "nui-callback-no-cb", "nui-no-strict-mode", "nui-return-before-cb", "per-frame-loop", "per-player-state-leak", "secret-in-client-files", "source-after-yield", "sql-concat", "unrestricted-command", "unvalidated-payload", "wrong-side-api"],
+    "min_high": 1
+  },
+  "regress/named_handler": {"must_include": ["source-after-yield", "unvalidated-payload"]},
+  "regress/manifest_side": {"must_include": ["wrong-side-api", "client-controlled-value"], "must_include_basis": {"wrong-side-api": "fact"}},
+  "regress/multiline_sql": {"must_include": ["sql-concat"], "min_findings": {"sql-concat": 2}},
+  "clean/helper_validation": {"max_high": 0, "max_medium": 0},
+  "clean/nui_forwarded_cb": {"max_high": 0, "max_medium": 0},
+  "clean/named_handlers": {"max_high": 0, "max_medium": 0},
+  "clean/command_checked": {"max_high": 0, "max_medium": 0},
+  "clean/sv_cl_names": {"max_high": 0, "max_medium": 0},
+  "clean/text_traps": {"max_high": 0, "max_medium": 0, "max_low": 0}
+}

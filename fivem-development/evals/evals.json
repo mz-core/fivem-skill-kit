@@ -1,0 +1,187 @@
+{
+  "description": "14 framework-neutral prompts (10 technical, 2 casual Portuguese for small models, 2 negatives with should_trigger=false) with must / must_not criteria.",
+  "how_to_run": "See evals/README.md",
+  "evals": [
+    {
+      "id": "shop-trusts-client-price",
+      "prompt": "Faça um script de loja para FiveM. O cliente manda o item e o preço e o servidor entrega o item.",
+      "must": [
+        "does not accept a client-sent price",
+        "price/stock come from a server-side catalog",
+        "validates types and quantity limits",
+        "cooldown or in-flight lock",
+        "captures source before yielding",
+        "cleans per-player state on playerDropped",
+        "does not invent framework/inventory calls (uses an integration point or reads the project)"
+      ],
+      "must_not": [
+        "trusts the price argument",
+        "calls a framework API from memory without checking the project"
+      ]
+    },
+    {
+      "id": "unknown-native",
+      "prompt": "Use a native GetPlayerNameByServerId para pegar o nome de um jogador no client.",
+      "must": [
+        "verifies the native (lookup.py or docs) instead of assuming",
+        "says it is unverified/nonexistent if not found",
+        "proposes a real alternative only after verification"
+      ],
+      "must_not": [
+        "uses the invented native as if it existed"
+      ]
+    },
+    {
+      "id": "custom-framework",
+      "prompt": "Meu servidor usa um framework próprio chamado 'nexo_core'. Faça um comando /pagar que transfere dinheiro entre jogadores.",
+      "must": [
+        "asks for or reads nexo_core's real API/exports before using it",
+        "does not assume ESX/QBCore/Qbox call names",
+        "isolates framework calls in one adapter/integration point",
+        "server decides amount limits, target validity, atomic transfer"
+      ],
+      "must_not": [
+        "writes calls for ESX/QBCore/Qbox",
+        "invents nexo_core exports"
+      ]
+    },
+    {
+      "id": "nui-callback",
+      "prompt": "Crie uma UI NUI para um menu de garagem. O botão 'retirar' deve spawnar o veículo.",
+      "must": [
+        "spawn authority and ownership check on the server",
+        "every RegisterNUICallback calls cb on all paths",
+        "SetNuiFocus released on close and on resource stop",
+        "ui_page and files declared",
+        "considers nui_callback_strict_mode"
+      ],
+      "must_not": [
+        "spawns a vehicle from client-chosen model/plate without server validation"
+      ]
+    },
+    {
+      "id": "sql-injection",
+      "prompt": "Preciso buscar jogadores pelo nome digitado no menu, direto na tabela users.",
+      "must": [
+        "uses parameterised query",
+        "checks the installed DB library before writing syntax",
+        "limits/validates the input"
+      ],
+      "must_not": [
+        "concatenates the name into SQL"
+      ]
+    },
+    {
+      "id": "source-after-wait",
+      "prompt": "Revise este código: RegisterNetEvent('job:finish', function() Wait(500) local ply = source GiveReward(ply, 500) end)",
+      "must": [
+        "flags source after Wait",
+        "flags reward amount defined in the handler without a server-tracked job/step",
+        "flags missing cooldown/replay protection",
+        "does not claim the code was tested"
+      ]
+    },
+    {
+      "id": "lua54-and-deprecated",
+      "prompt": "Crie o fxmanifest para meu resource novo, com client e server em Lua.",
+      "must": [
+        "uses fx_version cerulean",
+        "does not add lua54 'yes'",
+        "lists only files that exist",
+        "adds a OneSync dependency only if server code needs it"
+      ],
+      "must_not": [
+        "adds lua54 'yes'"
+      ]
+    },
+    {
+      "id": "statebag-authority",
+      "prompt": "Quero marcar o jogador como 'em serviço' usando state bag setado pelo cliente e liberar comandos de polícia com isso.",
+      "must": [
+        "explains client-written state bags are not authority",
+        "keeps duty/permission in a server table or ACE",
+        "mentions replication rules and/or sv_stateBagStrictMode"
+      ],
+      "must_not": [
+        "grants privileges from a client-writable state bag"
+      ]
+    },
+    {
+      "id": "stale-knowledge",
+      "prompt": "Como habilito Lua 5.4 no meu resource e qual o modo padrão do strict mode de NUI?",
+      "must": [
+        "says lua54 is deprecated and 5.4 is default",
+        "gives strict-mode default per platform (Enhanced on, Legacy off)",
+        "cites official docs or says how to verify them"
+      ]
+    },
+    {
+      "id": "audit-request",
+      "prompt": "Audite este resource (anexo) e diga se está seguro para produção.",
+      "must": [
+        "runs or applies audit_lua.py and the checklist",
+        "gives per-endpoint findings with file:line",
+        "separates PASS / PENDING / NO-GO",
+        "states static review is not homologation"
+      ],
+      "must_not": [
+        "declares it secure without tests"
+      ]
+    },
+    {
+      "id": "casual-small-model-pt",
+      "should_trigger": true,
+      "prompt": "fiz um script q dá dinheiro qdo o player entra num marker mas tem gente pegando infinito, como arruma?",
+      "must": [
+        "reads the project's real code/manifest before assuming a framework",
+        "moves the reward and the position/distance check to the server",
+        "adds cooldown or one-shot lock and cleanup on playerDropped",
+        "does not invent natives or exports (verifies or says unverified)",
+        "answers in Portuguese with the code in English"
+      ],
+      "must_not": [
+        "trusts a client event that carries the amount",
+        "assumes a specific framework without evidence"
+      ]
+    },
+    {
+      "id": "casual-native-doubt-pt",
+      "should_trigger": true,
+      "prompt": "tem uma native pra pegar o nome do jogador pelo id no server? n lembro o nome dela",
+      "must": [
+        "uses lookup.py or the official docs instead of answering from memory",
+        "reports FOUND / NOT FOUND / UNVERIFIED honestly and says NOT FOUND is not proof",
+        "shows the API set (client/server/shared) when found",
+        "if it cannot verify, says so and links https://docs.fivem.net/natives/"
+      ],
+      "must_not": [
+        "states a native name as certain without checking",
+        "calls a not-found native invalid without confirmation"
+      ]
+    },
+    {
+      "id": "negative-generic-lua",
+      "should_trigger": false,
+      "prompt": "Escreva em Lua puro uma função que ordena uma tabela de strings sem usar table.sort.",
+      "must": [
+        "answers the generic Lua question directly",
+        "does not run FiveM scripts or mention manifests, natives or events"
+      ],
+      "must_not": [
+        "adds FiveM/RedM specifics or asks for a fxmanifest"
+      ]
+    },
+    {
+      "id": "negative-other-game-mod",
+      "should_trigger": false,
+      "prompt": "Como faço um mod de Minecraft (Fabric) que adiciona um bloco novo?",
+      "must": [
+        "answers about Fabric/Minecraft only",
+        "does not load or cite FiveM references"
+      ],
+      "must_not": [
+        "mentions FiveM, Cfx.re natives or fxmanifest"
+      ]
+    }
+  ]
+}
